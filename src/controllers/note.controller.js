@@ -1,7 +1,7 @@
 import Note from "../models/note.model.js";
 import mongoose from "mongoose";
 
-// ✅ CREATE NOTE
+//  CREATE NOTE
 export const createNote = async (req, res) => {
   try {
     const { title, content, category, isPinned } = req.body;
@@ -31,7 +31,7 @@ export const createNote = async (req, res) => {
   }
 };
 
-// ✅ GET ALL NOTES
+//  GET ALL NOTES
 export const getAllNotes = async (req, res) => {
   try {
     const notes = await Note.find();
@@ -51,7 +51,7 @@ export const getAllNotes = async (req, res) => {
   }
 };
 
-// ✅ GET NOTE BY ID
+//  GET NOTE BY ID
 export const getNoteById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,6 +80,52 @@ export const getNoteById = async (req, res) => {
       success: true,
       message: "Note fetched successfully",
       data: note,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  }
+};
+
+export const replaceNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    //  Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid note ID",
+        data: null,
+      });
+    }
+
+    const updatedNote = await Note.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+        overwrite: true,     // ⭐ important for PUT
+        runValidators: true,
+      }
+    );
+
+    // Not found
+    if (!updatedNote) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not found",
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Note replaced successfully",
+      data: updatedNote,
     });
   } catch (error) {
     res.status(500).json({
