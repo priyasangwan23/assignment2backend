@@ -266,3 +266,31 @@ export const getNotesByStatus = asyncHandler(async (req, res) => {
     data: notes
   });
 });
+
+// 11. GET /api/notes/:id/summary — Get note summary
+export const getNoteSummary = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid note ID",
+      data: null
+    });
+  }
+
+  const note = await Note.findById(id).select("title category isPinned createdAt");
+  if (!note) {
+    return res.status(404).json({
+      success: false,
+      message: "Note not found",
+      data: null
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Note summary fetched successfully",
+    data: note
+  });
+});
