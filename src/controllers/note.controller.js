@@ -90,3 +90,36 @@ export const getNoteById = asyncHandler(async (req, res) => {
     data: note
   });
 });
+
+// 5. PUT /api/notes/:id — Full replace
+export const replaceNote = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid note ID",
+      data: null
+    });
+  }
+
+  const replacedNote = await Note.findByIdAndUpdate(
+    id,
+    req.body,
+    { new: true, overwrite: true, runValidators: true }
+  );
+
+  if (!replacedNote) {
+    return res.status(404).json({
+      success: false,
+      message: "Note not found",
+      data: null
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Note replaced successfully",
+    data: replacedNote
+  });
+});
