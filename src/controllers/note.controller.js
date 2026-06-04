@@ -164,3 +164,31 @@ export const updateNote = asyncHandler(async (req, res) => {
     data: updatedNote
   });
 });
+
+// 7. DELETE /api/notes/:id — Delete single
+export const deleteNote = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid note ID",
+      data: null
+    });
+  }
+
+  const deletedNote = await Note.findByIdAndDelete(id);
+  if (!deletedNote) {
+    return res.status(404).json({
+      success: false,
+      message: "Note not found",
+      data: null
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Note deleted successfully",
+    data: null
+  });
+});
