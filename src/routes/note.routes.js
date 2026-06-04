@@ -1,5 +1,5 @@
 import express from "express";
-import { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes, getNotesByCategory } from "../controllers/note.controller.js";
+import { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes, getNotesByCategory, getNotesByStatus } from "../controllers/note.controller.js";
 
 const router = express.Router();
 
@@ -7,6 +7,7 @@ router.post("/bulk", createBulkNotes);
 router.delete("/bulk", deleteBulkNotes);
 
 router.get("/category/:category", getNotesByCategory);
+router.get("/status/:isPinned", getNotesByStatus);
 
 router.post("/", createNote);
 router.get("/", getAllNotes);

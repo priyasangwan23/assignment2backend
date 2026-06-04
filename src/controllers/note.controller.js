@@ -243,3 +243,26 @@ export const getNotesByCategory = asyncHandler(async (req, res) => {
     data: notes
   });
 });
+
+// 10. GET /api/notes/status/:isPinned — Get by pinned status
+export const getNotesByStatus = asyncHandler(async (req, res) => {
+  const { isPinned } = req.params;
+
+  if (isPinned !== "true" && isPinned !== "false") {
+    return res.status(400).json({
+      success: false,
+      message: "isPinned must be true or false",
+      data: null
+    });
+  }
+
+  const pinned = isPinned === "true";
+  const notes = await Note.find({ isPinned: pinned });
+
+  res.status(200).json({
+    success: true,
+    message: pinned ? "Fetched all pinned notes" : "Fetched all unpinned notes",
+    count: notes.length,
+    data: notes
+  });
+});
