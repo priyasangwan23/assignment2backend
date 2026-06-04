@@ -51,3 +51,14 @@ export const createBulkNotes = asyncHandler(async (req, res) => {
     data: createdNotes
   });
 });
+
+// 3. GET /api/notes — Get all notes
+export const getAllNotes = asyncHandler(async (req, res) => {
+  const notes = await Note.find();
+  res.status(200).json({
+    success: true,
+    message: "Notes fetched successfully",
+    count: notes.length,
+    data: notes
+  });
+});
